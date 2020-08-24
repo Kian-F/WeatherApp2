@@ -4,54 +4,62 @@ import axios from "axios";
 import "../Card.css";
 import SearchForm from "./SearchForm";
 
-
 class Weather extends Component {
   constructor(props) {
     super();
     this.state = {
       city: "", //  will be set by SearchForm
-      weatherData: null //  will be populated via AJAX
+      weatherData: null, //  will be populated via AJAX
     };
   }
 
-  fetchWeather = city => {
+  fetchWeather = (city) => {
     const weatherURL = "https://www.metaweather.com/api/location/search/?";
     const weatherParams = {
-      query: city
+      query: city,
     };
-    axios.get(weatherURL, { params: weatherParams }).then(result => {
+    axios.get(weatherURL, { params: weatherParams }).then((result) => {
       console.log(result);
       // On failure we remove any old data and return to the starting value.
       this.setState({ weatherData: result.data });
     });
-  }
+  };
 
   render() {
     return (
       <div>
         <h1>Welcome to Your Simple Weather </h1>
         <h3>Please enter the city name for broadcast details </h3>
-        <h4>Note that CORS has not been enabled on the server side, if you are using Chrome please use extension like <span style={{color:'blue'}}>https://chrome.google.com/webstore/detail/allow-control-allow-origi/nlfbmbojpeacfghkpbjhddihlkkiljbi?hl=en</span> for development only (may affect other sites).</h4>
+        <h5>
+          Note that CORS has not been enabled on the server side, if you are
+          using Chrome please use extension like{" "}
+          
+          <a href="https://bit.ly/34rWS8U">Allow CORS</a>
+          {" "}
+          for development only (may affect other sites).
+        </h5>
         <SearchForm onSubmit={this.fetchWeather} />
         <WeatherInfo data={this.state.weatherData} />
         {/* <CityDetails dataFromParent={this.sate.woeid}/> */}
       </div>
-    )
-    
+    );
   }
-
-   
 }
 
-const WeatherInfo = props => {
+const WeatherInfo = (props) => {
   console.log(props);
   //show the result if they are availeble
-  if (props && props.data === null ) {
+  if (props && props.data === null) {
     return " ";
   } else {
     return (
-      <div>
-        <Link to={`/weather/${props.data[0].woeid}`}>{props.data[0].title}</Link>
+      <div className='cityLink'>
+        <Link to={`/weather/${props.data[0].woeid}`}>
+          <button className="btn btn-dark btn-outline-light">
+            Details of {props.data[0].title}
+          </button>
+          
+        </Link>
         <h4>Location Type: {props.data[0].location_type}</h4>
         {/* <a href={`https://www.metaweather.com/api/location/${props.data[0].woeid}`} target="_blank" rel='noopener noreferrer'>Latiude: { props.data[0].woeid}</a> */}
         <h4>Latitude Longitude: {props.data[0].latt_long}</h4>
